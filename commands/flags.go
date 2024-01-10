@@ -21,7 +21,7 @@ var portFlag = cli.IntSliceFlag{
 	Usage: fmt.Sprintf("[One of port/script Required] The port number on which a TCP connection will be attempted. Specify one or more times. Example: 8000"),
 }
 
-var portUdpFlag = cli.IntSliceFlag{
+var udpPortFlag = cli.IntSliceFlag{
 	Name:  "port-udp",
 	Usage: fmt.Sprintf("[One of port/script Required] The port number on which a UDP connection will be attempted. Specify one or more times. Example: 8000"),
 }
@@ -56,7 +56,7 @@ var logLevelFlag = cli.StringFlag{
 
 var defaultFlags = []cli.Flag{
 	portFlag,
-	portUdpFlag,
+	udpPortFlag,
 	scriptFlag,
 	scriptTimeoutFlag,
 	singleflightFlag,
@@ -85,13 +85,13 @@ func parseOptions(cliContext *cli.Context) (*options.Options, error) {
 	logger.SetLevel(level)
 
 	ports := cliContext.IntSlice("port")
-	portsudp := cliContext.IntSlice("portsudp")
+	udpports := cliContext.IntSlice("udpport")
 
 	scriptArr := cliContext.StringSlice("script")
 	scripts := options.ParseScripts(scriptArr)
 
-	if len(ports) == 0 || len(scripts) == 0 || len(portsudp) == 0 {
-		return nil, OneOfParamsRequired{portFlag.Name, scriptFlag.Name, portUdpFlag.Name}
+	if len(ports) == 0 || len(scripts) == 0 || len(udpports) == 0 {
+		return nil, OneOfParamsRequired{portFlag.Name, scriptFlag.Name, udpPortFlag.Name}
 	}
 
 	singleflight := cliContext.Bool("singleflight")
@@ -105,7 +105,7 @@ func parseOptions(cliContext *cli.Context) (*options.Options, error) {
 
 	return &options.Options{
 		Ports:         ports,
-		PortsUdp:      portsudp,
+		UdpPorts:      udpports,
 		Scripts:       scripts,
 		ScriptTimeout: scriptTimeout,
 		Singleflight:  singleflight,

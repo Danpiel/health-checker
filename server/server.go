@@ -74,19 +74,19 @@ func runChecks(opts *options.Options) *httpResponse {
 
 	var waitGroup = sync.WaitGroup{}
 
-	for _, portudp := range opts.PortsUdp {
+	for _, udpport := range opts.UdpPorts {
 		waitGroup.Add(1)
-		go func(portudp int) {
-			err := attemptTcpConnection(portudp, opts)
+		go func(udpport int) {
+			err := attemptUdpConnection(udpport, opts)
 			if err != nil {
-				logger.Warnf("UDP connection to port %d FAILED: %s", portudp, err)
+				logger.Warnf("UDP connection to port %d FAILED: %s", udpport, err)
 				allChecksOk = false
 			} else {
-				logger.Infof("UDP connection to port %d successful", portudp)
+				logger.Infof("UDP connection to port %d successful", udpport)
 			}
 
 			waitGroup.Done()
-		}(portudp)
+		}(udpport)
 	}
 	for _, port := range opts.Ports {
 		waitGroup.Add(1)
@@ -159,13 +159,13 @@ func attemptTcpConnection(port int, opts *options.Options) error {
 	return nil
 }
 
-func attemptUdpConnection(portudp int, opts *options.Options) error {
+func attemptUdpConnection(udpport int, opts *options.Options) error {
 	logger := opts.Logger
-	logger.Infof("Attempting to connect to port %d via UDP...", portudp)
+	logger.Infof("Attempting to connect to port %d via UDP...", udpport)
 
 	defaultTimeout := time.Second * 5
 	p := make([]byte, 2048)
-	conn, err := net.DialTimeout("udp", fmt.Sprintf("0.0.0.0:%d", portudp), defaultTimeout)
+	conn, err := net.DialTimeout("udp", fmt.Sprintf("0.0.0.0:%d", udpport), defaultTimeout)
 
 	if err != nil {
 		return err

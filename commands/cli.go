@@ -58,8 +58,8 @@ func runHealthChecker(cliContext *cli.Context) error {
 	if len(opts.Ports) > 0 {
 		opts.Logger.Infof("The Health Check will attempt to connect to the following ports via TCP: %v", opts.Ports)
 	}
-	if len(opts.PortsUdp) > 0 {
-		opts.Logger.Infof("The Health Check will attempt to connect to the following ports via UDP: %v", opts.PortsUdp)
+	if len(opts.UdpPorts) > 0 {
+		opts.Logger.Infof("The Health Check will attempt to connect to the following ports via UDP: %v", opts.UdpPorts)
 	}
 
 	if len(opts.Scripts) > 0 {

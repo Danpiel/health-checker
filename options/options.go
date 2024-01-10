@@ -9,7 +9,7 @@ import (
 // The options accepted by this CLI tool
 type Options struct {
 	Ports         []int
-	PortsUdp      []int
+	UdpPorts      []int
 	Scripts       []Script
 	ScriptTimeout int
 	Singleflight  bool
