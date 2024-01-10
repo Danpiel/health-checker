@@ -85,7 +85,7 @@ func parseOptions(cliContext *cli.Context) (*options.Options, error) {
 	logger.SetLevel(level)
 
 	ports := cliContext.IntSlice("port")
-	portsudp := cliContext.IntSlice("portudp")
+	portsudp := cliContext.IntSlice("portsudp")
 
 	scriptArr := cliContext.StringSlice("script")
 	scripts := options.ParseScripts(scriptArr)
