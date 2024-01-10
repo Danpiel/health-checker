@@ -90,8 +90,8 @@ func parseOptions(cliContext *cli.Context) (*options.Options, error) {
 	scriptArr := cliContext.StringSlice("script")
 	scripts := options.ParseScripts(scriptArr)
 
-	if len(ports) == 0 && len(scripts) == 0 {
-		return nil, OneOfParamsRequired{portFlag.Name, scriptFlag.Name}
+	if len(ports) == 0 && len(scripts) == 0 && len(portsudp) == 0 {
+		return nil, OneOfParamsRequired{portFlag.Name, scriptFlag.Name, portUdpFlag.Name}
 	}
 
 	singleflight := cliContext.Bool("singleflight")
@@ -140,8 +140,9 @@ func (paramName MissingParam) Error() string {
 type OneOfParamsRequired struct {
 	param1 string
 	param2 string
+	param3 string
 }
 
 func (paramNames OneOfParamsRequired) Error() string {
-	return fmt.Sprintf("Missing required parameter, one of --%s / --%s required", string(paramNames.param1), string(paramNames.param2))
+	return fmt.Sprintf("Missing required parameter, one of --%s / --%s / --%s required", string(paramNames.param1), string(paramNames.param2), string(paramNames.param3))
 }
