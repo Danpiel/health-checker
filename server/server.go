@@ -1,6 +1,7 @@
 package server
 
 import (
+	"bufio"
 	"context"
 	"fmt"
 	"net"
@@ -9,8 +10,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/danpiel/health-checker/options"
 	"github.com/gruntwork-io/go-commons/errors"
-	"github.com/gruntwork-io/health-checker/options"
 	"golang.org/x/sync/singleflight"
 )
 
@@ -73,6 +74,20 @@ func runChecks(opts *options.Options) *httpResponse {
 
 	var waitGroup = sync.WaitGroup{}
 
+	for _, portudp := range opts.PortsUdp {
+		waitGroup.Add(1)
+		go func(portudp int) {
+			err := attemptTcpConnection(portudp, opts)
+			if err != nil {
+				logger.Warnf("UDP connection to port %d FAILED: %s", portudp, err)
+				allChecksOk = false
+			} else {
+				logger.Infof("UDP connection to port %d successful", portudp)
+			}
+
+			waitGroup.Done()
+		}(portudp)
+	}
 	for _, port := range opts.Ports {
 		waitGroup.Add(1)
 		go func(port int) {
@@ -137,6 +152,32 @@ func attemptTcpConnection(port int, opts *options.Options) error {
 	conn, err := net.DialTimeout("tcp", fmt.Sprintf("0.0.0.0:%d", port), defaultTimeout)
 	if err != nil {
 		return err
+	}
+
+	defer conn.Close()
+
+	return nil
+}
+
+func attemptUdpConnection(portudp int, opts *options.Options) error {
+	logger := opts.Logger
+	logger.Infof("Attempting to connect to port %d via UDP...", portudp)
+
+	defaultTimeout := time.Second * 5
+	p := make([]byte, 2048)
+	conn, err := net.DialTimeout("udp", fmt.Sprintf("0.0.0.0:%d", portudp), defaultTimeout)
+
+	if err != nil {
+		return err
+	}
+
+	fmt.Fprintf(conn, "Hi UDP Server, How are you doing?")
+	_, err = bufio.NewReader(conn).Read(p)
+
+	if err == nil {
+		fmt.Printf("%s\n", p)
+	} else {
+		fmt.Printf("Some error %v\n", err)
 	}
 
 	defer conn.Close()

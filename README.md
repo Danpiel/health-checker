@@ -54,6 +54,7 @@ health-checker [options]
 | Option | Description | Default
 | ------ | ----------- | -------
 | `--port` | The port number on which a TCP connection will be attempted. Specify one or more times. | |
+| `--portudp` | The port number on which a UDP connection will be attempted. Specify one or more times. | |
 | `--listener` |  The IP address and port on which inbound HTTP connections will be accepted. | `0.0.0.0:5000`
 | `--log-level` | Set the log level to LEVEL. Must be one of: `panic`, `fatal`, `error,` `warning`, `info`, or `debug` | `info`
 | `--help` | Show the help screen | |
@@ -71,7 +72,7 @@ attempt to open TCP connections to port 5432 and 3306. If both succeed, return `
 504 Gateway Not Found`.
 
 ```
-health-checker --listener "0.0.0.0:6000" --port 5432 --port 3306
+health-checker --listener "0.0.0.0:6000" --port 5432 --port 3306 --portudp 53
 ```
 
 #### Example 2
@@ -81,7 +82,7 @@ attempt to open TCP connection to port 5432 and run the script with a 10 second 
 504 Gateway Not Found`.
 
 ```
-health-checker --listener "0.0.0.0:6000" --port 5432 --script /path/to/script.sh --script-timeout 10
+health-checker --listener "0.0.0.0:6000" --port 5432 --portudp 53 --script /path/to/script.sh --script-timeout 10
 ```
 
 #### Example 3

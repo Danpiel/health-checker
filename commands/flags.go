@@ -5,8 +5,8 @@ import (
 	"os"
 	"strings"
 
+	"github.com/danpiel/health-checker/options"
 	"github.com/gruntwork-io/go-commons/logging"
-	"github.com/gruntwork-io/health-checker/options"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 )
@@ -19,6 +19,11 @@ const ENV_VAR_NAME_DEBUG_MODE = "HEALTH_CHECKER_DEBUG"
 var portFlag = cli.IntSliceFlag{
 	Name:  "port",
 	Usage: fmt.Sprintf("[One of port/script Required] The port number on which a TCP connection will be attempted. Specify one or more times. Example: 8000"),
+}
+
+var portUdpFlag = cli.IntSliceFlag{
+	Name:  "port-udp",
+	Usage: fmt.Sprintf("[One of port/script Required] The port number on which a UDP connection will be attempted. Specify one or more times. Example: 8000"),
 }
 
 var scriptFlag = cli.StringSliceFlag{
@@ -51,6 +56,7 @@ var logLevelFlag = cli.StringFlag{
 
 var defaultFlags = []cli.Flag{
 	portFlag,
+	portUdpFlag,
 	scriptFlag,
 	scriptTimeoutFlag,
 	singleflightFlag,
@@ -79,6 +85,7 @@ func parseOptions(cliContext *cli.Context) (*options.Options, error) {
 	logger.SetLevel(level)
 
 	ports := cliContext.IntSlice("port")
+	portsudp := cliContext.IntSlice("portudp")
 
 	scriptArr := cliContext.StringSlice("script")
 	scripts := options.ParseScripts(scriptArr)
@@ -98,6 +105,7 @@ func parseOptions(cliContext *cli.Context) (*options.Options, error) {
 
 	return &options.Options{
 		Ports:         ports,
+		PortsUdp:      portsudp,
 		Scripts:       scripts,
 		ScriptTimeout: scriptTimeout,
 		Singleflight:  singleflight,

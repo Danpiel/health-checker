@@ -1,8 +1,8 @@
 package commands
 
 import (
+	"github.com/danpiel/health-checker/server"
 	"github.com/gruntwork-io/go-commons/errors"
-	"github.com/gruntwork-io/health-checker/server"
 	"github.com/urfave/cli"
 )
 
@@ -58,6 +58,10 @@ func runHealthChecker(cliContext *cli.Context) error {
 	if len(opts.Ports) > 0 {
 		opts.Logger.Infof("The Health Check will attempt to connect to the following ports via TCP: %v", opts.Ports)
 	}
+	if len(opts.PortsUdp) > 0 {
+		opts.Logger.Infof("The Health Check will attempt to connect to the following ports via UDP: %v", opts.PortsUdp)
+	}
+
 	if len(opts.Scripts) > 0 {
 		opts.Logger.Infof("The Health Check will attempt to run the following scripts: %v", opts.Scripts)
 	}
