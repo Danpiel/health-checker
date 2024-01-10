@@ -1,4 +1,4 @@
-module github.com/danpiel/health-check
+module github.com/danpiel/health-checker
 
 go 1.14
 
