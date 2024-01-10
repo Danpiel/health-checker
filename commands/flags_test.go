@@ -2,12 +2,13 @@ package commands
 
 import (
 	"flag"
-	"github.com/gruntwork-io/health-checker/options"
-	"github.com/gruntwork-io/health-checker/test"
-	"github.com/stretchr/testify/assert"
-	"github.com/urfave/cli"
 	"strings"
 	"testing"
+
+	"github.com/danpiel/health-checker/options"
+	"github.com/danpiel/health-checker/test"
+	"github.com/stretchr/testify/assert"
+	"github.com/urfave/cli"
 )
 
 func TestParseChecksFromConfig(t *testing.T) {
